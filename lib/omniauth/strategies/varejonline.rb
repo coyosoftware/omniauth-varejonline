@@ -53,13 +53,13 @@ module OAuth2
   class Client
     def get_token(params, access_token_opts={})
       opts = {:raise_errors => options[:raise_errors], :parse => params.delete(:parse)}
-
-      params[:redirect_uri] = params[:redirect_uri].gsub(/\?(.*)/, "")
       
       if options[:token_method] == :post
         headers = params.delete(:headers)
 
         if params[:formato] == :json
+          params[:redirect_uri] = params[:redirect_uri].gsub(/\?(.*)/, "")
+
           opts[:body] = params.to_json
           opts[:headers] =  {'Content-Type' => 'application/json'}
         else
@@ -71,6 +71,8 @@ module OAuth2
       else
         opts[:params] = params
       end
+
+      p opts[:body]
 
       response = request(options[:token_method], token_url, opts)
       raise Error.new(response) if options[:raise_errors] && !(response.parsed.is_a?(Hash) && response.parsed['access_token'])
