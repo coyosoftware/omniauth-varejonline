@@ -53,6 +53,9 @@ module OAuth2
   class Client
     def get_token(params, access_token_opts={})
       opts = {:raise_errors => options[:raise_errors], :parse => params.delete(:parse)}
+
+      params[:redirect_uri] = params[:redirect_uri].gsub(/\?(.*)/, "")
+      
       if options[:token_method] == :post
         headers = params.delete(:headers)
 
